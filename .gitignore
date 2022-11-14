@@ -1,0 +1,7 @@
+*.exe
+main-*.cpp
+array.cpp
+backtracking.cpp
+.vscode
+new.cpp
+tests.cpp
