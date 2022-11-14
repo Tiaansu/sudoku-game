@@ -10,27 +10,11 @@ using namespace std;
 #define DUMMY_TAB_1         "  "
 #define PLAYER_HEADER       "\n\tYour name here\n\tCOURSE - Branch - Section\n\n\tSudoku Puzzle\n"
 
-bool CanEnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num); // early declaration for CanEnterNumber()
-void PrintGrid(int grid[BOARD_SIZE][BOARD_SIZE]); // early declaration for PrintGrid()
-void EnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num); // early declaration for EnterNumber()
-void StartGame(); // early declaration for StartGame() 
+bool CanEnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num);
+void PrintGrid(int grid[BOARD_SIZE][BOARD_SIZE]);
+void EnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num);
+void StartGame();
 
-/**
- * Function: UsedInRow()
- * Params: 
- *        - grid
- *              - The entered board
- *        - row
- *              - The entered row
- *        - num
- *              - The entered number
- * 
- * Returns:
- *        - true
- *              - If the row and column matched the entered number.
- *        - false
- *              - If the row and column did not match the entered number.
- */
 bool UsedInRow(int grid[BOARD_SIZE][BOARD_SIZE], int row, int num)
 {
     for (int col = 0; col < BOARD_SIZE; col ++)
@@ -43,22 +27,6 @@ bool UsedInRow(int grid[BOARD_SIZE][BOARD_SIZE], int row, int num)
     return false;
 }
 
-/**
- * Function: UsedInCol()
- * Params: 
- *        - grid
- *              - The entered board
- *        - col
- *              - The entered col
- *        - num
- *              - The entered number
- * 
- * Returns:
- *        - true
- *              - If the row and column matched the entered number.
- *        - false
- *              - If the row and column did not match the entered number.
- */
 bool UsedInCol(int grid[BOARD_SIZE][BOARD_SIZE], int col, int num)
 {
     for (int row = 0; row < BOARD_SIZE; row ++)
@@ -71,24 +39,6 @@ bool UsedInCol(int grid[BOARD_SIZE][BOARD_SIZE], int col, int num)
     return false;
 }
 
-/**
- * Function: UsedInBox()
- * Params: 
- *        - grid
- *              - The entered board
- *        - boxStartRow
- *              - The starting row of the box
- *        - boxStartCol
- *              - The starting column of the box
- *        - num
- *              - The entered number
- * 
- * Returns:
- *        - true
- *              - If the number is already used in the box.
- *        - false
- *              - If the number is available for the box.
- */
 bool UsedInBox(int grid[BOARD_SIZE][BOARD_SIZE], int boxStartRow, int boxStartCol, int num)
 {
     for (int row = 0; row < 3; row ++)
@@ -104,38 +54,11 @@ bool UsedInBox(int grid[BOARD_SIZE][BOARD_SIZE], int boxStartRow, int boxStartCo
     return false;
 }
 
-/**
- * Function: CanEnterNumber()
- * Params: 
- *        - grid
- *              - The entered board
- *        - row
- *              - The entered row
- *        - col
- *              - The entered column
- *        - num
- *              - The entered number
- * 
- * Returns:
- *        - true
- *              - If the number is available in row, column, box, and the value of field is equals to 0
- *        - false
- *              - If the number is not available in row, column, box, and the value of field is not equals to 0
- */
 bool CanEnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num)
 {
     return !UsedInRow(grid, row, num) && !UsedInCol(grid, col, num) && !UsedInBox(grid, row - row % 3, col - col % 3, num) && grid[row][col] == UNASSIGNED_VALUE;
 }
 
-/**
- * Function: CountBlankSpaces()
- * Params: 
- *        - grid
- *              - The entered board
- * 
- * Returns:
- *        - Number of blank spaces.
- */
 int CountBlankSpaces(int grid[BOARD_SIZE][BOARD_SIZE])
 {
     int count = 0;
@@ -153,18 +76,6 @@ int CountBlankSpaces(int grid[BOARD_SIZE][BOARD_SIZE])
     return count;
 }
 
-/**
- * Function: IsValidNumber()
- * Params: 
- *        - num
- *              - The entered number
- * 
- * Returns:
- *        - true
- *              - If the entered number is valid
- *        - false
- *              - If the entered number is invalid
- */
 bool IsValidNumber(int num)
 {
     int validNumber[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -180,18 +91,6 @@ bool IsValidNumber(int num)
     return false;
 }
 
-/**
- * Function: IsValidNumber()
- * Params: 
- *        - row
- *              - The entered row
- * 
- * Returns:
- *        - true
- *              - If the entered row is valid
- *        - false
- *              - If the entered row is invalid
- */
 bool IsValidRow(int row)
 {
     if (row < 0 || row > 8)
@@ -201,18 +100,6 @@ bool IsValidRow(int row)
     return true;
 }
 
-/**
- * Function: IsValidCol()
- * Params: 
- *        - col
- *              - The entered column
- * 
- * Returns:
- *        - true
- *              - If the entered column is valid
- *        - false
- *              - If the entered column is invalid
- */
 bool IsValidCol(int col)
 {
     if (col < 0 || col > 8)
@@ -222,21 +109,6 @@ bool IsValidCol(int col)
     return true;
 }
 
-/**
- * Function: EnterNumber()
- * Params: 
- *        - grid
- *              - The entered grid
- *        - row
- *              - The entered row
- *        - col
- *              - The entered column
- *        - num
- *              - The entered number
- * 
- * Returns:
- *        - none as it's a void function
- */
 void EnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num)
 {
     if (CanEnterNumber(grid, row, col, num) && IsValidNumber(num) == true && IsValidRow(row) == true && IsValidCol(col) == true)
@@ -291,14 +163,6 @@ void EnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num)
     }
 }
 
-/**
- * Function: ClearConsole()
- * Params: 
- *        - none
- * 
- * Returns:
- *        - none as it's a void function
- */
 void ClearConsole()
 {
     #ifdef __WIN32
@@ -318,15 +182,6 @@ void ClearConsole()
     #endif
 }
 
-/**
- * Function: PrintGrid()
- * Params: 
- *        - grid
- *              - The entered grid         
- * 
- * Returns:
- *        - none as it's a void function
- */
 void PrintGrid(int grid[BOARD_SIZE][BOARD_SIZE])
 {
     ClearConsole();
@@ -417,15 +272,6 @@ void PrintGrid(int grid[BOARD_SIZE][BOARD_SIZE])
     }
 }
 
-/**
- * Function: FillRandom()
- * Params: 
- *        - grid
- *              - The entered grid         
- * 
- * Returns:
- *        - none as it's a void function
- */
 void FillRandom(int grid[BOARD_SIZE][BOARD_SIZE])
 {
     for (int row = 0; row < BOARD_SIZE; row ++)
@@ -446,14 +292,6 @@ void FillRandom(int grid[BOARD_SIZE][BOARD_SIZE])
     }
 }
 
-/**
- * Function: FillRandom()
- * Params: 
- *        - none         
- * 
- * Returns:
- *        - none as it's a void function
- */
 void StartGame()
 {
     int grid[BOARD_SIZE][BOARD_SIZE];
