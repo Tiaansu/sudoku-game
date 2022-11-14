@@ -5,6 +5,17 @@ To download the code click [here].
 
 # A simple code tutorial
 
+## Includes
+**#include <iostream>** - For input / output
+**#include <ctime>** - For **time()** function
+```c++
+#include <iostream>
+#include <ctime>
+#include <stdlib.h>
+#include <unistd.h>
+using namespace std;
+```
+
 
 [Wikipedia]: https://en.wikipedia.org/wiki/Sudoku
 [here]: https
