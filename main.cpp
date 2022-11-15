@@ -2,6 +2,7 @@
 #include <ctime>
 #include <stdlib.h>
 #include <unistd.h>
+#include <cstdlib>
 using namespace std;
 
 #define UNASSIGNED_VALUE    0
@@ -169,16 +170,9 @@ void ClearConsole()
         system("cls");
     #elif __WIN64
         system("cls");
-    #elif __APPLE__ || __MACH__
-        system("clear");
-    #elif __linux__
-        system("clear");
-    #elif __FreeBSD__
-        system("clear");
-    #elif __unix || __unix__
-        system("clear");
     #else
         system("clear");
+        cout << "\n\n\n" << endl;
     #endif
 }
 
