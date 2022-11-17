@@ -5,22 +5,21 @@
 #include <cstdlib>
 using namespace std;
 
-#define UNASSIGNED_VALUE    0
-#define BOARD_SIZE          9
-#define DUMMY_TAB           "    "
-#define DUMMY_TAB_1         "  "
-#define PLAYER_HEADER       "\n\tYour name here\n\tCOURSE - Branch - Section\n\n\tSudoku Puzzle\n"
+#define UnassignedValue     0
+#define BoardSize           9
+#define DummyTab            "    "
+#define DummyTab1           "  "
 
-bool CanEnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num);
-void PrintGrid(int grid[BOARD_SIZE][BOARD_SIZE]);
-void EnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num);
-void StartGame();
+bool CanEnterNumber(int board[BoardSize][BoardSize], int row, int column, int num);
+void PrintBoard(int board[BoardSize][BoardSize]);
+void EnterNumberInBoard(int board[BoardSize][BoardSize], int row, int column, int num);
+void StartSudokuGame();
 
-bool UsedInRow(int grid[BOARD_SIZE][BOARD_SIZE], int row, int num)
+bool UsedInRow(int board[BoardSize][BoardSize], int row, int num)
 {
-    for (int col = 0; col < BOARD_SIZE; col ++)
+    for (int column = 0; column < BoardSize; column ++)
     {
-        if (grid[row][col] == num)
+        if (board[row][column] == num)
         {
             return true;
         }
@@ -28,11 +27,11 @@ bool UsedInRow(int grid[BOARD_SIZE][BOARD_SIZE], int row, int num)
     return false;
 }
 
-bool UsedInCol(int grid[BOARD_SIZE][BOARD_SIZE], int col, int num)
+bool UsedInColumn(int board[BoardSize][BoardSize], int column, int num)
 {
-    for (int row = 0; row < BOARD_SIZE; row ++)
+    for (int row = 0; row < BoardSize; row ++)
     {
-        if (grid[row][col] == num)
+        if (board[row][column] == num)
         {
             return true;
         }
@@ -40,13 +39,13 @@ bool UsedInCol(int grid[BOARD_SIZE][BOARD_SIZE], int col, int num)
     return false;
 }
 
-bool UsedInBox(int grid[BOARD_SIZE][BOARD_SIZE], int boxStartRow, int boxStartCol, int num)
+bool UsedInBox(int board[BoardSize][BoardSize], int BoxStartRow, int BoxStartColumn, int num)
 {
     for (int row = 0; row < 3; row ++)
     {
-        for (int col = 0; col < 3; col ++)
+        for (int column = 0; column < 3; column ++)
         {
-            if (grid[row + boxStartRow][col + boxStartCol] == num)
+            if (board[row + BoxStartRow][column + BoxStartColumn] == num)
             {
                 return true;
             }
@@ -55,20 +54,20 @@ bool UsedInBox(int grid[BOARD_SIZE][BOARD_SIZE], int boxStartRow, int boxStartCo
     return false;
 }
 
-bool CanEnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num)
+bool CanEnterNumber(int board[BoardSize][BoardSize], int row, int column, int num)
 {
-    return !UsedInRow(grid, row, num) && !UsedInCol(grid, col, num) && !UsedInBox(grid, row - row % 3, col - col % 3, num) && grid[row][col] == UNASSIGNED_VALUE;
+    return !UsedInRow(board, row, num) && !UsedInColumn(board, column, num) && !UsedInBox(board, row - row % 3, column - column % 3, num) && board[row][column] == UnassignedValue;
 }
 
-int CountBlankSpaces(int grid[BOARD_SIZE][BOARD_SIZE])
+int CountBlankSpaces(int board[BoardSize][BoardSize])
 {
     int count = 0;
-    
-    for (int row = 0; row < BOARD_SIZE; row ++)
+
+    for (int row = 0; row < BoardSize; row ++)
     {
-        for (int col = 0; col < BOARD_SIZE; col ++)
+        for (int column = 0; column < BoardSize; column ++)
         {
-            if (grid[row][col] == UNASSIGNED_VALUE)
+            if (board[row][column] == UnassignedValue)
             {
                 count ++;
             }
@@ -79,12 +78,12 @@ int CountBlankSpaces(int grid[BOARD_SIZE][BOARD_SIZE])
 
 bool IsValidNumber(int num)
 {
-    int validNumber[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int validNumberLength = sizeof validNumber / sizeof validNumber[0];
+    int ValidNumber[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int ValidNumberLength = sizeof ValidNumber / sizeof ValidNumber[0];
 
-    for (int i = 0; i < validNumberLength; i ++)
+    for (int i = 0; i < ValidNumberLength; i ++)
     {
-        if (validNumber[i] == num)
+        if (ValidNumber[i] == num)
         {
             return true;
         }
@@ -101,69 +100,89 @@ bool IsValidRow(int row)
     return true;
 }
 
-bool IsValidCol(int col)
+bool IsValidColumn(int column)
 {
-    if (col < 0 || col > 8)
+    if (column < 0 || column > 8)
     {
         return false;
     }
     return true;
 }
 
-void EnterNumber(int grid[BOARD_SIZE][BOARD_SIZE], int row, int col, int num)
+void EnterNumberInBoard(int board[BoardSize][BoardSize], int row, int column, int num)
 {
-    if (CanEnterNumber(grid, row, col, num) && IsValidNumber(num) == true && IsValidRow(row) == true && IsValidCol(col) == true)
+    if (CanEnterNumber(board, row, column, num) && IsValidNumber(num) == true && IsValidRow(row) == true && IsValidColumn(column) == true)
     {
-        grid[row][col] = num;
-        PrintGrid(grid);
+        board[row][column] = num;
+        PrintBoard(board);
     }
     else
     {
-        if (UsedInRow(grid, row, num) == true)
+        if (UsedInRow(board, row, num) == true)
         {
-            cout << "The number " << num << " is used in row " << row + 1;
-            sleep(1.5);
-            PrintGrid(grid);
+            cout << "ERROR: The number " << num << " is used in row " << row + 1;
+            
+            sleep(2);
+            
+            PrintBoard(board);
         }
-        else if (UsedInCol(grid, col, num) == true)
+        else if (UsedInColumn(board, column, num) == true)
         {
-            cout << "The number " << num << " is used in column " << col + 1;
-            sleep(1.5);
-            PrintGrid(grid);
+            cout << "ERROR: The number " << num << " is used in column " << column + 1;
+
+            sleep(2);
+            
+            PrintBoard(board);
         }
-        else if (UsedInBox(grid, row - row % 3, col - col % 3, num) == true)
+        else if (UsedInBox(board, row - row % 3, column - column % 3, num) == true)
         {
-            cout << "The number " << num << " is used in row " << (row - row % 3) + 1 << " and column " << (col - col % 3) + 1;
-            sleep(1.5);
-            PrintGrid(grid);
+            cout << "ERROR: The num " << " is used in row " << (row - row % 3) + 1 << " and column " << (column - column % 3) + 1;
+
+            sleep(2);
+
+            PrintBoard(board);
         }
         else if (IsValidNumber(num) == false)
         {
-            cout << "The number " << num << " is invalid";
-            sleep(1.5);
-            PrintGrid(grid);
+            cout << "ERROR: The number " << num << " is invalid";
+
+            sleep(2);
+
+            PrintBoard(board);
         }
         else if (IsValidRow(row) == false)
         {
-            cout << "The row " << row << " is invalid";
-            sleep(1.5);
-            PrintGrid(grid);
+            cout << "ERROR: The row " << row + 1 << " is invalid";
+
+            sleep(2);
+
+            PrintBoard(board);
         }
-        else if (IsValidCol(col) == false)
+        else if (IsValidColumn(column) == false)
         {
-            cout << "The column " << col << " is invalid";
-            sleep(1.5);
-            PrintGrid(grid);
+            cout << "ERROR: The column " << column + 1 << " is invalid";
+
+            sleep(2);
+
+            PrintBoard(board);
         }
         else
         {
-            cout << "Unknown error.";
-            sleep(1.5);
-            PrintGrid(grid);
+            cout << "ERROR: Unknown error.";
+
+            sleep(2);
+
+            PrintBoard(board);
         }
     }
 }
 
+/**
+ * 
+ * Thanks for these links for different system clear commands.
+ * - https://www.unix.com/programming/241672-system-clear-error.html
+ * - https://stackoverflow.com/questions/15580179/how-do-i-find-the-name-of-an-operating-system
+ */
 void ClearConsole()
 {
     #ifdef __WIN32
@@ -172,91 +191,90 @@ void ClearConsole()
         system("cls");
     #else
         system("clear");
-        cout << "\n\n\n" << endl;
     #endif
 }
 
-void PrintGrid(int grid[BOARD_SIZE][BOARD_SIZE])
+void PrintBoard(int board[BoardSize][BoardSize])
 {
     ClearConsole();
-
-    cout << PLAYER_HEADER << endl;
-
-    cout << DUMMY_TAB << "         C   O   L   U   M   N      \n";
-    cout << DUMMY_TAB << "   1   2   3   4   5   6   7   8   9\n\n";
+    
+    cout << DummyTab << "         C   O   L   U   M   N      \n";
+    cout << DummyTab << "   1   2   3   4   5   6   7   8   9\n\n";
 
     int tab = 0;
     
-    for (int row = 0; row < BOARD_SIZE; row ++)
+    for (int row = 0; row < BoardSize; row ++)
     {
         tab ++;
         if (tab == 2)
         {
-            cout << "R " << tab << DUMMY_TAB_1 << "| ";
+            cout << "R " << tab << DummyTab1 << "| ";
             
         }
         else if (tab == 4)
         {
-            cout << "O " << tab << DUMMY_TAB_1 << "| ";
+            cout << "O " << tab << DummyTab1 << "| ";
         }
         else if (tab == 6)
         {
-            cout << "W " << tab << DUMMY_TAB_1 << "| ";
+            cout << "W " << tab << DummyTab1 << "| ";
         }
         else if (tab == 8)
         {
-            cout << "S " << tab << DUMMY_TAB_1 << "| ";
+            cout << "S " << tab << DummyTab1 << "| ";
         }
         else
         {
-            cout << "  " << tab << DUMMY_TAB_1 << "| ";
+            cout << "  " << tab << DummyTab1 << "| ";
         }
 
-        for (int col = 0; col < BOARD_SIZE; col ++)
+        for (int column = 0; column < BoardSize; column ++)
         {
-            if (grid[row][col] == UNASSIGNED_VALUE)
+            if (board[row][column] == UnassignedValue)
             {
                 cout << " ";
             }
             else
             {
-                cout << grid[row][col];
+                cout << board[row][column];
             }
             cout << " | ";
         }
         cout << endl;
     }
 
-    int row, col, num;
-    if (CountBlankSpaces(grid) != 0)
+    if (CountBlankSpaces(board) != 0)
     {
-        cout << "\nYou have " << CountBlankSpaces(grid) << " blank field left." << endl;
+        int row, column, num;
 
-        cout << "Enter the row: ";
+        cout << "\nSYSTEM: You still have " << CountBlankSpaces(board) << " blank field left." << endl;
+
+        cout << "SYSTEM: Enter the row: ";
         cin >> row;
 
-        cout << "Enter the column: ";
-        cin >> col;
+        cout << "SYSTEM: Enter the column: ";
+        cin >> column;
 
-        cout << "Enter the number that you want to enter in specified row and column: ";
+        cout << "SYSTEM: Enter tthe number that you want to enter in row " << row << " and column " << column << ": ";
         cin >> num;
-        EnterNumber(grid, row - 1, col - 1, num);
+
+        EnterNumberInBoard(board, row - 1, column - 1, num);
     }
     else
     {
         char Option;
 
-        cout << "\n\nCongratulations! You completed the Sudoku puzzle.\nWant to continue? (Y - Yes | N - No): ";
+        cout << "\n\nSYSTEM: Congratulations! You have completed the Sudoku puzzle.\nWant to continue? (Y - Yes | N - No): ";
         cin >> Option;
 
         switch (Option)
         {
             case 'Y':
             {
-                StartGame();
+                StartSudokuGame();
             }
             break;
-            
+
             case 'N':
             {
                 exit(0);
@@ -266,46 +284,42 @@ void PrintGrid(int grid[BOARD_SIZE][BOARD_SIZE])
     }
 }
 
-void FillRandom(int grid[BOARD_SIZE][BOARD_SIZE])
+void FillRandomBoxInBoard(int board[BoardSize][BoardSize])
 {
-    for (int row = 0; row < BOARD_SIZE; row ++)
+    for (int row = 0; row < BoardSize; row ++)
     {
-        for (int col = 0; col < BOARD_SIZE; col ++)
+        for (int column = 0; column < BoardSize; column ++)
         {
             int num = (rand() % 9) + 0;
 
-            if (CanEnterNumber(grid, row, col, num))
+            if (CanEnterNumber(board, row, column, num))
             {
-                grid[row][col] = num;
+                board[row][column] = num;
             }
             else
             {
-                grid[row][col] = UNASSIGNED_VALUE;
+                board[row][column] = UnassignedValue;
             }
         }
     }
 }
 
-void StartGame()
+void StartSudokuGame()
 {
-    int grid[BOARD_SIZE][BOARD_SIZE];
-    
-    FillRandom(grid);
+    int board[BoardSize][BoardSize];
 
-    cout << PLAYER_HEADER << endl;
-
-    cout << "Preparing game, please wait..." << endl;
+    FillRandomBoxInBoard(board);
 
     sleep(1);
 
-    PrintGrid(grid);
+    PrintBoard(board);
 }
 
 int main()
 {
     srand(time(NULL));
 
-    StartGame();
+    StartSudokuGame();
 
     return 0;
 }
